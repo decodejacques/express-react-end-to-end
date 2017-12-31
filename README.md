@@ -1,4 +1,4 @@
-#Backend
+# Backend
 `node index.js`
-#Frontend
+# Frontend
 npm start
