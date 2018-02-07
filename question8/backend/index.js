@@ -1,33 +1,24 @@
 const express = require('express')
 const app = express()
 var bodyParser = require('body-parser')
-const fs = require('fs-extra');
+const fs = require('fs');
 app.use(bodyParser.raw({ type: '*/*' }))
 let todos = {}
 
 function loadTodos() {
-    return fs.ensureFile('todos.json')
-        .then(() =>
-            fs.readFile('todos.json')
-        )
-        .then(raw => {
-            if (raw == undefined || raw.toString().length == 0) {
-                todos = {};
-            }
-            else {
-                console.log(raw.toString());
-                todos = JSON.parse(raw);
-            }
-        })
+
+    try {
+        let contents = fs.readFileSync('todos.json');
+        todos = JSON.parse(contents);
+    } catch (err) { }
+
 }
 
 function saveTodos() {
-    return fs.writeFile(
+    return fs.writeFileSync(
         'todos.json',
         JSON.stringify(todos))
 }
-
-
 
 app.get('/todos', (req, res) => {
     let username = req.query.username
@@ -44,8 +35,8 @@ app.post('/addTodo', (req, res) => {
     if (userTodos == undefined) userTodos = []
     userTodos.push(item);
     todos[username] = userTodos;
-    saveTodos()
-        .then(() => res.send("ok"))
+    saveTodos();
+    res.send("ok");
 
 })
 
@@ -53,10 +44,9 @@ app.post('/clearTodos', (req, res) => {
     let payload = JSON.parse(req.body.toString());
     let username = payload.username;
     todos[username] = [];
-    saveTodos()
-        .then(() => res.send("ok"))
+    saveTodos();
+    res.send("ok");
 })
 
-loadTodos()
-    .then(() =>
-        app.listen(4000, () => console.log('Port 4000!')))
+loadTodos();
+app.listen(4000, () => console.log('Port 4000!'))
