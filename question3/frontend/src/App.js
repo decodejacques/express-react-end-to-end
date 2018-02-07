@@ -4,11 +4,11 @@ import './App.css';
 class App extends Component {
   constructor() {
     super();
-    this.state = { numbers: [] }
+    this.state = { elements: [] }
   }
 
   add = () => {
-    this.setState(st => { return { numbers: st.numbers.concat(this.inp.value) } }, () => this.inp.value = "")
+    this.setState(st => { return { elements: st.elements.concat(this.inp.value) } }, () => this.inp.value = "")
   }
 
   render() {
@@ -16,7 +16,7 @@ class App extends Component {
       <div className="App">
         <input ref={r => this.inp = r}></input>
         <button onClick={this.add}>add it </button>
-        {this.state.numbers.map(x => (<li> {x} </li>))}
+        {this.state.elements.map(x => (<li> {x} </li>))}
       </div>
     );
   }
